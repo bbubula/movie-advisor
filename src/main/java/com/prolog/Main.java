@@ -15,7 +15,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		if(args.length != 1){
-			logger.error("Invalid number of arguments. Use: <path_to_prolog_file");
+			logger.error("Invalid number of arguments. Use: <path_to_prolog_file>");
 		}
 		String prologFilePath = args[0];
 		PrologQueryExecutor prologQueryExecutor = new PrologQueryExecutor(new File(prologFilePath));

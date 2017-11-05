@@ -18,6 +18,46 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<copy file="${project.build.directory}/${artifactId}-${version}-jar-with-dependencies.jar" tofile="../out/${artifactId}.jar"/>
+								<copy file="${project.basedir}/projog-core.jar" tofile="../out/projog-core.jar"/>
+								<copy todir="../out/projogGeneratedClasses">
+									<fileset dir="${project.basedir}/projogGeneratedClasses">
+										<include name="**/*"/>
+									</fileset>
+								</copy>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -40,5 +80,4 @@
 			<systemPath>${project.basedir}/projog-core.jar</systemPath>
 		</dependency>
 	</dependencies>
-
 </project>
