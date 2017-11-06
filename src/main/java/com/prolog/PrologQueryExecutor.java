@@ -1,23 +1,26 @@
 package com.prolog;
 
 import java.io.File;
+import java.util.Map;
 
-import org.projog.api.Projog;
-import org.projog.api.QueryResult;
-import org.projog.api.QueryStatement;
+import org.jpl7.Query;
+import org.jpl7.Term;
 
 public class PrologQueryExecutor {
 
-	private Projog projog;
+	private File prologFile;
 
 	public PrologQueryExecutor(File prologFile) {
-		this.projog = new Projog();
-		projog.consultFile(prologFile);
+		this.prologFile = prologFile;
 	}
 
-	public QueryResult executeQuery(String query) {
-		QueryStatement queryStatement = projog.query(query);
-		QueryResult queryResult = queryStatement.getResult();
-		return queryResult;
+	public boolean consultFile() {
+		String consultFile = "consult('" + prologFile.getAbsolutePath() + "')";
+		return Query.hasSolution(consultFile);
+	}
+
+	public Map<String, Term> executeQuery(String query) {
+		Map<String, Term> terms = Query.oneSolution(query);
+		return terms;
 	}
 }
