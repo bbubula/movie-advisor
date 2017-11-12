@@ -103,6 +103,8 @@ public class KnowledgeBaseGenerator {
 
     private void addPremise(String structure, Object key, String value) {
         String premise = String.format(structure, key.toString().trim(), value.trim());
+        premise = premise.endsWith(".") ? premise : (premise + '.');
+        premise = premise.replaceAll(" ", "");
         writer.println(premise);
     }
 }
