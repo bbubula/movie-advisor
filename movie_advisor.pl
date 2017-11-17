@@ -90,14 +90,14 @@ askIfAmbitiousMovieIsPreferred(no) :-
 
 askIfAmbitiousMovieIsPreferred(yes) :-
     askForAmbitious(),
-    rejectMovieOfGenre(“Comedy”),
-    rejectMovieOfGenre(“Family”),
-    rejectMovieOfGenre(“Animation”),
-    rejectMovieOfGenre(“Fantasy”),
-    rejectMovieOfGenre(“Sci-Fi”),
-    rejectMovieOfGenre(“Musical”),
-    rejectMovieOfGenre(“Romance”),
-    rejectMovieOfGenre(“Western”).
+    rejectMovieOfGenre("Comedy"),
+    rejectMovieOfGenre("Family"),
+    rejectMovieOfGenre("Animation"),
+    rejectMovieOfGenre("Fantasy"),
+    rejectMovieOfGenre("Sci-Fi"),
+    rejectMovieOfGenre("Musical"),
+    rejectMovieOfGenre("Romance"),
+    rejectMovieOfGenre("Western").
 
 askForAmbitious :- 
     write("Do you like ambitious movies ? (y/n)"),
