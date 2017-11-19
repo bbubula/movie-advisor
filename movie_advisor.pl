@@ -107,8 +107,8 @@ askForAmbitious :-
     (X == "n" ; X == "no") -> askIfAmbitiousMovieIsPreferred(no);
     write("\nInavlid input\n"),fail).
 
-rejectMoviesOfGenre(Genre):-
-    rejectMovie(X), movieOfGenre(X, Genre).
+rejectMovieOfGenre(Genre):-
+    movieOfGenre(X, Genre), rejectMovie(X).
 
 /* years filtering */
 whichYearsAreAcceptable() :-
