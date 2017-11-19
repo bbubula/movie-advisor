@@ -1,6 +1,6 @@
-:- ensure_loaded(knowledge_base).
+:- ensure_loaded(knowledge_base_sorted).
 
-b_setval(global_movies_count,  149700).
+global_movies_count(149700).
 
 /* main choose structure */
 choose_movie(Description) :- 
@@ -12,7 +12,7 @@ choose_movie(Description) :-
 
 /* creating acceptable movies set */
 createAcceptableMoviesSet() :- 
-    b_getval(global_movies_count, X), addMovieToSet(X).
+    global_movies_count(X), addMovieToSet(X).
 
 addMovieToSet(Val) :-
     asserta(acceptableMovie(Val)),
@@ -59,7 +59,7 @@ askForFiction() :-
     read(X),
     ((X == "y" ; X == "yes") -> askIfFictionIsPreferred(yes);
     (X == "n" ; X == "no") -> askIfFictionIsPreferred(no);
-    write(‘\nInavlid input\n’),fail).
+    write("\nInavlid input\n"),fail).
 
 /* action filter */
 askIfActionIsPreferred(no) :-
@@ -116,7 +116,7 @@ whichYearsAreAcceptable() :-
     rejectMovies(ListOfMovies).
 
 moviesOutsideYearRange(ListOfMovies, MinYear, MaxYear) :-
-    b_getval(global_movies_count, X), addMoviesToListByYear(X - 1, ListOfMovies, MinYear, MaxYear).
+    global_movies_count(X), addMoviesToListByYear(X - 1, ListOfMovies, MinYear, MaxYear).
 
 addMoviesToListByYear(Current, ListOfMovies, MinYear, MaxYear) :- 
     movieCreatedInYear(Current, Year), 
@@ -160,7 +160,7 @@ askForDurationRange() :-
     moviesOutsideRange(ListOfMovies, MinDuration, MaxDuration).
 
 moviesOutsideDurationRange(ListOfMovies, MinDuration, MaxDuration) :-
-    b_getval(global_movies_count, X), addMoviesToListByYear(X - 1, ListOfMovies, MinDuration, MaxDuration).
+    global_movies_count(X), addMoviesToListByYear(X - 1, ListOfMovies, MinDuration, MaxDuration).
 
 addMoviesToListByDuration(Current, ListOfMovies, MinDuration, MaxDuration) :- 
     movieOfDuration(Current, Duration), 
@@ -236,4 +236,3 @@ proposeMoviesForKeyword(Keyword) :-
 
 acceptableMovie(MovieId) :-
     write("\n Watch: "), write(HyperLink), movieHyperlink(MovieId, HyperLink).
-
