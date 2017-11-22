@@ -1,30 +1,37 @@
 package com.prolog;
 
 import java.io.File;
+import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.prolog.streamsmanager.QuestionObservable;
+import com.prolog.streamsmanager.QuestionObserver;
 
 public class Main {
 
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+	public static void main(String[] args) {
 
+		PrologQueryExecutor prologQueryExecutor = new PrologQueryExecutor(new File("test11.pl"));
+		prologQueryExecutor.consultFile();
+		Runnable r1 = () -> prologQueryExecutor.executeQuery("ask('Lubisz mnie? (y/n)')");
+		Thread t1 = new Thread(r1);
+		t1.start();
 
-    public static void main(String[] args) {
-        if(args.length !=1 ){
-            logger.error("Invalid number of arguments. Use: <path_to_prolog_file>");
-            return;
-        }
-        File prologFile = new File(args[0]);
-        if(!prologFile.exists()){
-            logger.error("Specified prolog file: " + prologFile.getAbsolutePath() + " doesn't exist");
-            return;
-        }
-        PrologQueryExecutor prologQueryExecutor = new PrologQueryExecutor(prologFile);
-        prologQueryExecutor.consultFile();
-        prologQueryExecutor.executeQuery("wykonaj");
-    }
+		QuestionObservable questionObservable = new QuestionObservable();
+		QuestionObserver questionObserver = new QuestionObserver();
+		questionObservable.addObserver(questionObserver);
+
+		Runnable r2 = () -> {
+			try {
+				questionObservable.readQuestion();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		};
+		Thread t2 = new Thread(r2);
+		t2.start();
+	}
 }
-
 
 

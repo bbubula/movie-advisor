@@ -15,7 +15,7 @@ public class PrologQueryExecutor {
 	}
 
 	public boolean consultFile() {
-		String consultFile = "consult('" + prologFile.getAbsolutePath() + "')";
+		String consultFile = "consult('" + prologFile + "')";
 		return Query.hasSolution(consultFile);
 	}
 
