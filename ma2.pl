@@ -41,8 +41,8 @@ filterPart() :-
 whichGenresAreAcceptable() :-
     askIfFictionIsPreferred(),
     askIfActionIsPreferred(),
-    askIfAmbitiousMovieIsPreferred().
-    /*askIfEmotionalMovieIsPreffered(). */
+    askIfAmbitiousMovieIsPreferred(),
+    askIfEmotionalMovieIsPreffered(). 
 
 /* duration filtering */
 askForDurationRange(MinDuration, MaxDuration) :- 
@@ -108,7 +108,31 @@ getMoviesWithIncorrectYear(Current, ListOfMovies, MinYear, MaxYear) :-
     NewCurrent is Current - 1,
     getMoviesWithIncorrectYear(NewCurrent, ListOfMovies, MinYear, MaxYear).
 
+/* emotional filter */
+
+askIfEmotionalMovieIsPreffered() :- 
+    write("Do you like emotional movies ? (y/n)"),
+    nl,
+    read(X),
+    ((X == y ; X == yes) -> emotionalMoviePreferred(yes);
+    (X == n ; X == no) -> emotionalMoviePreferred(no);
+    (write("\nInavlid input, once again...\n")), askIfEmotionalMovieIsPreferred()).
+)
+
+emotionalMoviePreferred(no) :-
+    rejectMovieOfGenre("Romance"),
+    rejectMovieOfGenre("Drama"),
+    rejectMovieOfGenre("Thriller").
+
+emotionalMoviePreferred(yes) :-
+    rejectMovieOfGenre("Comedy"),
+    rejectMovieOfGenre("Family"),
+    rejectMovieOfGenre("Animation"),
+    rejectMovieOfGenre("Fantasy"),
+    rejectMovieOfGenre("Sci-Fi").
+
 /* ambitious filter */
+
 askIfAmbitiousMovieIsPreferred() :- 
     write("Do you like ambitious movies ? (y/n)"),
     nl,
