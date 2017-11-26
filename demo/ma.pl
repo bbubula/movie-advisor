@@ -2,12 +2,13 @@
 :- ensure_loaded(geo_country).
 
 global_movies_count(25).
+maxKeywordsToBeOffered(3).
 
 /* main choose structure */
 choose_movie(Description) :- 
     createAcceptableMoviesSet(),
-    filterPart(), 
-    /**propositionsPart().*/
+    filterPart(),
+    propositionsPart(),
     ((acceptableMovie(Result), movieHasHumanReadableDescription(Result, Description)); noResultFound(Description)).
 
 noResultFound("No results found. Try again with modified criteria. ;)").
@@ -258,6 +259,70 @@ getMoviesOfGenre(Current, [Current|ListOfMovies], Genre) :-
 getMoviesOfGenre(Current, ListOfMovies, Genre) :- 
     NewCurrent is Current - 1,
     getMoviesOfGenre(NewCurrent, ListOfMovies, Genre).
+
+/* propositionsPart */
+propositionsPart() :- 
+    maxKeywordsToBeOffered(Count), offerByKeywords(Count).
+
+/* getting list of acceptable movies */
+acceptableMovieSet(ListOfMovies) :-
+    global_movies_count(X), getAcceptableMovieSet(X, ListOfMovies).
+
+getAcceptableMovieSet(-1, []).
+
+getAcceptableMovieSet(Current, [Current|ListOfMovies]) :- 
+    acceptableMovie(Current), 
+    NewCurrent is Current - 1,
+    getAcceptableMovieSet(NewCurrent, ListOfMovies).
+
+getAcceptableMovieSet(Current, ListOfMovies) :- 
+    NewCurrent is Current - 1,
+    getAcceptableMovieSet(NewCurrent, ListOfMovies).
+
+/* offering by keywords */
+offerByKeywords(Count) :- 
+    acceptableMovieSet(ListOfMovies),
+    askForKeywords(ListOfMovies, Count). 
+
+askForKeywords([], _).
+askForKeywords(_, -1).
+
+askForKeywords([H|T], Current):-
+    movieWithPlotKeyword(H, Keyword),
+    askForKeyword(Keyword),
+    NewCurrent is Current - 1,
+    askForKeywords(T, NewCurrent).
+
+askForKeywords([_|T], Current):-
+    askForKeywords(T, Current).
+
+askForKeyword(Keyword) :- 
+    write("Are you interested with '"),
+    write(Keyword),
+    write("' (y/n) ?"),
+    nl,
+    read(X),
+    (((X == n ; X == no) -> rejectMoviesWithKeyword(Keyword));
+    (X == y; X == yes);
+    (write("\nInvalid input. Try again...\n"), askForKeyword(Keyword))).
+
+/* removal based on keyword */
+rejectMoviesWithKeyword(Keyword):-
+    global_movies_count(X), 
+    getMoviesWithKeyword(X, MoviesList, Keyword), 
+    rejectMovies(MoviesList).
+
+getMoviesWithKeyword(-1, [], _).
+
+getMoviesWithKeyword(Current, [Current|ListOfMovies], Keyword) :- 
+    movieWithPlotKeyword(Current, Keyword), 
+    NewCurrent is Current - 1,
+    getMoviesWithKeyword(NewCurrent, ListOfMovies, Keyword).
+
+getMoviesWithKeyword(Current, ListOfMovies, Keyword) :- 
+    NewCurrent is Current - 1,
+    getMoviesWithKeyword(NewCurrent, ListOfMovies, Keyword).
+
 
 /* util */
 or(A, B) :-
