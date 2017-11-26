@@ -146,7 +146,6 @@ movieCreatedInCountry(23, "USA").
 movieCreatedInCountry(24, "USA").
 movieCreatedInCountry(25, "New Zealand").
 movieCreatedInCountry(3, "USA").
-movieCreatedInCountry(4, "").
 movieCreatedInCountry(5, "USA").
 movieCreatedInCountry(6, "USA").
 movieCreatedInCountry(7, "USA").
@@ -197,7 +196,6 @@ movieDirectedBy(23, "Peter Jackson").
 movieDirectedBy(24, "Chris Weitz").
 movieDirectedBy(25, "Peter Jackson").
 movieDirectedBy(3, "Christopher Nolan").
-movieDirectedBy(4, "Doug Walker").
 movieDirectedBy(5, "Andrew Stanton").
 movieDirectedBy(6, "Sam Raimi").
 movieDirectedBy(7, "Nathan Greno").
@@ -298,7 +296,6 @@ movieHasHumanReadableDescription(23, "Film 'The Hobbit: The Desolation of Smaug'
 movieHasHumanReadableDescription(24, "Film 'The Golden Compass' created in year 2007, directed by Chris Weitz is available here: http://www.imdb.com/title/tt0385752/?ref_=fn_tt_tt_1 - enjoy!").
 movieHasHumanReadableDescription(25, "Film 'King Kong' created in year 2005, directed by Peter Jackson is available here: http://www.imdb.com/title/tt0360717/?ref_=fn_tt_tt_1 - enjoy!").
 movieHasHumanReadableDescription(3, "Film 'The Dark Knight Rises' created in year 2012, directed by Christopher Nolan is available here: http://www.imdb.com/title/tt1345836/?ref_=fn_tt_tt_1 - enjoy!").
-movieHasHumanReadableDescription(4, "Film 'Star Wars: Episode VII - The Force Awakens' created in year , directed by Doug Walker is available here: http://www.imdb.com/title/tt5289954/?ref_=fn_tt_tt_1 - enjoy!").
 movieHasHumanReadableDescription(5, "Film 'John Carter' created in year 2012, directed by Andrew Stanton is available here: http://www.imdb.com/title/tt0401729/?ref_=fn_tt_tt_1 - enjoy!").
 movieHasHumanReadableDescription(6, "Film 'Spider-Man 3' created in year 2007, directed by Sam Raimi is available here: http://www.imdb.com/title/tt0413300/?ref_=fn_tt_tt_1 - enjoy!").
 movieHasHumanReadableDescription(7, "Film 'Tangled' created in year 2010, directed by Nathan Greno is available here: http://www.imdb.com/title/tt0398286/?ref_=fn_tt_tt_1 - enjoy!").
@@ -324,7 +321,6 @@ movieHasRankValue(23, 7.9).
 movieHasRankValue(24, 6.1).
 movieHasRankValue(25, 7.2).
 movieHasRankValue(3, 8.5).
-movieHasRankValue(4, 7.1).
 movieHasRankValue(5, 6.6).
 movieHasRankValue(6, 6.2).
 movieHasRankValue(7, 7.8).
@@ -350,7 +346,6 @@ movieHasTitle(23, "The Hobbit: The Desolation of Smaug").
 movieHasTitle(24, "The Golden Compass").
 movieHasTitle(25, "King Kong").
 movieHasTitle(3, "The Dark Knight Rises").
-movieHasTitle(4, "Star Wars: Episode VII - The Force Awakens").
 movieHasTitle(5, "John Carter").
 movieHasTitle(6, "Spider-Man 3").
 movieHasTitle(7, "Tangled").
@@ -376,7 +371,6 @@ movieHyperlink(23, "http://www.imdb.com/title/tt1170358/?ref_=fn_tt_tt_1").
 movieHyperlink(24, "http://www.imdb.com/title/tt0385752/?ref_=fn_tt_tt_1").
 movieHyperlink(25, "http://www.imdb.com/title/tt0360717/?ref_=fn_tt_tt_1").
 movieHyperlink(3, "http://www.imdb.com/title/tt1345836/?ref_=fn_tt_tt_1").
-movieHyperlink(4, "http://www.imdb.com/title/tt5289954/?ref_=fn_tt_tt_1").
 movieHyperlink(5, "http://www.imdb.com/title/tt0401729/?ref_=fn_tt_tt_1").
 movieHyperlink(6, "http://www.imdb.com/title/tt0413300/?ref_=fn_tt_tt_1").
 movieHyperlink(7, "http://www.imdb.com/title/tt0398286/?ref_=fn_tt_tt_1").
@@ -496,7 +490,6 @@ movieOfGenre(25, "Drama").
 movieOfGenre(25, "Romance").
 movieOfGenre(3, "Action").
 movieOfGenre(3, "Thriller").
-movieOfGenre(4, "Documentary").
 movieOfGenre(5, "Action").
 movieOfGenre(5, "Adventure").
 movieOfGenre(5, "Sci-Fi").
@@ -577,9 +570,6 @@ movieWithActorInCast(25, "Thomas Kretschmann").
 movieWithActorInCast(3, "Christian Bale").
 movieWithActorInCast(3, "Joseph Gordon-Levitt").
 movieWithActorInCast(3, "Tom Hardy").
-movieWithActorInCast(4, "").
-movieWithActorInCast(4, "Doug Walker").
-movieWithActorInCast(4, "Rob Walker").
 movieWithActorInCast(5, "Daryl Sabara").
 movieWithActorInCast(5, "Polly Walker").
 movieWithActorInCast(5, "Samantha Morton").
@@ -615,7 +605,6 @@ movieWithFame(23, 83000).
 movieWithFame(24, 0).
 movieWithFame(25, 0).
 movieWithFame(3, 164000).
-movieWithFame(4, 0).
 movieWithFame(5, 24000).
 movieWithFame(6, 0).
 movieWithFame(7, 29000).
@@ -766,7 +755,6 @@ movieWithTotalActorFame(23, 9152).
 movieWithTotalActorFame(24, 24106).
 movieWithTotalActorFame(25, 7123).
 movieWithTotalActorFame(3, 106759).
-movieWithTotalActorFame(4, 143).
 movieWithTotalActorFame(5, 1873).
 movieWithTotalActorFame(6, 46055).
 movieWithTotalActorFame(7, 2036).

@@ -1,6 +1,7 @@
 :- ensure_loaded(knowledge_short).
+:- ensure_loaded(geo_country).
 
-global_movies_count(3).
+global_movies_count(25).
 
 /* main choose structure */
 choose_movie(Description) :- 
@@ -32,19 +33,104 @@ rejectMovies([H|Tail]):-
     rejectMovie(H), rejectMovies(Tail).
 
 
-
 /* filtering movies set*/
 filterPart() :- 
     whichYearsAreAcceptable(),
-    whichGenresAreAcceptable().
-    /*whatDurationIsAccpetable(),
-    whichContinentsAreAcceptable().*/
+    whichGenresAreAcceptable(),
+    whatDurationIsAcceptable(),
+    whichContinentsAreAcceptable().
 
+/* duration filtering */
+askForDurationRange(MinDuration, MaxDuration) :- 
+    write("Specify movie duration range"),
+    nl,
+    write("Specify min duration for the movie"),
+    nl,
+    read(MinDuration),
+    nl,
+    write("Specify max duration for the movie"),
+    nl,
+    read(MaxDuration).
+
+whatDurationIsAcceptable() :- 
+    askForDurationRange(MinDuration, MaxDuration),
+    moviesOutsideDurationRange(ListOfMovies, MinDuration, MaxDuration),
+    rejectMovies(ListOfMovies).
+
+moviesOutsideDurationRange(ListOfMovies, MinDuration, MaxDuration) :-
+    global_movies_count(X), getMoviesWithIncorrectDuration(X, ListOfMovies, MinDuration, MaxDuration).
+
+getMoviesWithIncorrectDuration(-1, [], _, _).
+
+getMoviesWithIncorrectDuration(Current, [Current|ListOfMovies], MinDuration, MaxDuration) :- 
+    movieOfDuration(Current, Duration), 
+    or(Duration < MinDuration, Duration > MaxDuration),
+    NewCurrent is Current - 1,
+    getMoviesWithIncorrectDuration(NewCurrent, ListOfMovies, MinDuration, MaxDuration).
+
+getMoviesWithIncorrectDuration(Current, ListOfMovies, MinDuration, MaxDuration) :- 
+    NewCurrent is Current - 1,
+    getMoviesWithIncorrectDuration(NewCurrent, ListOfMovies, MinDuration, MaxDuration).
+
+/* genres filtering */
 whichGenresAreAcceptable() :-
     askIfFictionIsPreferred(),
     askIfActionIsPreferred(),
-    askIfAmbitiousMovieIsPreferred().
-    /*askIfEmotionalMovieIsPreffered(). */
+    askIfAmbitiousMovieIsPreferred(),
+    askIfEmotionalMovieIsPreffered().
+
+/* continent filtering */
+whichContinentsAreAcceptable() :-
+    askIfEuropeanMoviesAreAcceptable(),
+    askIfAmericanMoviesAreAcceptable(),
+    askIfAsianMoviesAreAcceptable(),
+    askIfAfricanMoviesAreAcceptable().
+
+askIfEuropeanMoviesAreAcceptable() :- 
+    askForContinent("Europe").
+
+askIfAsianMoviesAreAcceptable() :- 
+    askForContinent("Asia").
+
+askIfAfricanMoviesAreAcceptable() :- 
+    askForContinent("Africa").
+
+askIfAmericanMoviesAreAcceptable() :- 
+    askForContinent("America").
+
+askForContinent(Continent) :- 
+    write("Do you like movies from: "),
+    write(Continent),
+    write(" (y/n) ?"),
+    nl,
+    read(X),
+    ((X == y ; X == yes) -> moviesFromContinentPreferred(yes);
+    (X == n ; X == no) -> moviesFromContinentPreferred(no, Continent);
+    (write("\nInavlid input, once again...\n")), askForContinent()).
+
+moviesFromContinentPreferred(yes).
+
+moviesFromContinentPreferred(no, Continent) :- 
+    rejectMoviesFromContinent(Continent).
+
+rejectMoviesFromContinent(Continent) :- 
+    moviesFromContinent(ListOfMovies, Continent),
+    rejectMovies(ListOfMovies).
+
+moviesFromContinent(ListOfMovies, Continent) :-
+    global_movies_count(X), getMoviesFromContinent(X, ListOfMovies, Continent).
+
+getMoviesFromContinent(-1, [], _).
+
+getMoviesFromContinent(Current, [Current|ListOfMovies], Continent) :- 
+    movieCreatedInCountry(Current, Country), 
+    belongsToContinent(Country, Continent),
+    NewCurrent is Current - 1,
+    getMoviesFromContinent(NewCurrent, ListOfMovies, Continent).
+
+getMoviesFromContinent(Current, ListOfMovies, Continent) :- 
+    NewCurrent is Current - 1,
+    getMoviesFromContinent(NewCurrent, ListOfMovies, Continent).
 
 /* years filtering */
 askForYearRange(MinYear, MaxYear) :- 
@@ -135,6 +221,28 @@ fictionPreferred(no) :-
 fictionPreferred(yes) :-
     rejectMovieOfGenre("Documentary"),
     rejectMovieOfGenre("History").
+
+/* emotional filter */
+
+askIfEmotionalMovieIsPreffered() :- 
+    write("Do you like emotional movies ? (y/n)"),
+    nl,
+    read(X),
+    ((X == y ; X == yes) -> emotionalMoviePreferred(yes);
+    (X == n ; X == no) -> emotionalMoviePreferred(no);
+    (write("\nInavlid input, once again...\n")), askIfEmotionalMovieIsPreferred()).
+
+emotionalMoviePreferred(no) :-
+    rejectMovieOfGenre("Romance"),
+    rejectMovieOfGenre("Drama"),
+    rejectMovieOfGenre("Thriller").
+
+emotionalMoviePreferred(yes) :-
+    rejectMovieOfGenre("Comedy"),
+    rejectMovieOfGenre("Family"),
+    rejectMovieOfGenre("Animation"),
+    rejectMovieOfGenre("Fantasy"),
+    rejectMovieOfGenre("Sci-Fi").
 
 /* genre util */
 rejectMovieOfGenre(Genre):-
