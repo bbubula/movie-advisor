@@ -1,3 +1,4 @@
+global_movies_count(25).
 actorWithFame("Adam Brown", 972).
 actorWithFame("Adam Brown", 972).
 actorWithFame("Aidan Turner", 5000).

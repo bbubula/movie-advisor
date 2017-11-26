@@ -1,8 +1,9 @@
-:- ensure_loaded(knowledge_short).
+:- ensure_loaded(knowledge_base).
 :- ensure_loaded(geo_country).
 
-global_movies_count(25).
-maxKeywordsToBeOffered(3).
+debug_enabled(no).
+maxKeywordsToBeOffered(5).
+maxDirectorsToBeOffered(3).
 
 /* main choose structure */
 choose_movie(Description) :- 
@@ -27,11 +28,28 @@ addMovieToSet(Val) :-
 
 rejectMovie(X):-
     retract(acceptableMovie(X)).
+
 rejectMovie(_). /* if already not acceptable */
 
-rejectMovies([]).
+rejectMovies([]):-
+    global_movies_count(X),
+    (debug_enabled(no);(write("ACCEPTABLE: "),showAcceptableIds(X),write("\n"))).
+
 rejectMovies([H|Tail]):-
-    rejectMovie(H), rejectMovies(Tail).
+    rejectMovie(H), 
+    rejectMovies(Tail).
+
+showAcceptableIds(-1).
+showAcceptableIds(X):-
+    acceptableMovie(X),
+    write(X),
+    write(" "),
+    NewX is X -1,
+    showAcceptableIds(NewX).
+
+showAcceptableIds(X):-
+    NewX is X -1,
+    showAcceptableIds(NewX).
 
 
 /* filtering movies set*/
@@ -260,9 +278,10 @@ getMoviesOfGenre(Current, ListOfMovies, Genre) :-
     NewCurrent is Current - 1,
     getMoviesOfGenre(NewCurrent, ListOfMovies, Genre).
 
-/* propositionsPart */
+/* -------------------------------------------------- propositionsPart --------------------------------------------------*/
 propositionsPart() :- 
-    maxKeywordsToBeOffered(Count), offerByKeywords(Count).
+    offerByKeywords(),
+    offerByDirectors().
 
 /* getting list of acceptable movies */
 acceptableMovieSet(ListOfMovies) :-
@@ -280,12 +299,13 @@ getAcceptableMovieSet(Current, ListOfMovies) :-
     getAcceptableMovieSet(NewCurrent, ListOfMovies).
 
 /* offering by keywords */
-offerByKeywords(Count) :- 
+offerByKeywords() :- 
+    maxKeywordsToBeOffered(Count), 
     acceptableMovieSet(ListOfMovies),
     askForKeywords(ListOfMovies, Count). 
 
 askForKeywords([], _).
-askForKeywords(_, -1).
+askForKeywords(_, 0).
 
 askForKeywords([H|T], Current):-
     movieWithPlotKeyword(H, Keyword),
@@ -322,6 +342,52 @@ getMoviesWithKeyword(Current, [Current|ListOfMovies], Keyword) :-
 getMoviesWithKeyword(Current, ListOfMovies, Keyword) :- 
     NewCurrent is Current - 1,
     getMoviesWithKeyword(NewCurrent, ListOfMovies, Keyword).
+
+
+/* offering by director */
+offerByDirectors() :- 
+    maxDirectorsToBeOffered(Count), 
+    acceptableMovieSet(ListOfMovies),
+    askForDirectors(ListOfMovies, Count). 
+
+askForDirectors([], _).
+askForDirectors(_, 0).
+
+askForDirectors([H|T], Current):-
+    movieDirectedBy(H, Director),
+    askForDirector(Director),
+    NewCurrent is Current - 1,
+    askForDirectors(T, NewCurrent).
+
+askForDirectors([_|T], Current):-
+    askForDirectors(T, Current).
+
+askForDirector(Director) :- 
+    write("Do you like director '"),
+    write(Director),
+    write("' (y/n) ?"),
+    nl,
+    read(X),
+    (((X == n ; X == no) -> rejectMoviesWithDirector(Director));
+    (X == y; X == yes);
+    (write("\nInvalid input. Try again...\n"), askForDirector(Director))).
+
+/* removal based on director */
+rejectMoviesWithDirector(Director):-
+    global_movies_count(X), 
+    getMoviesDirectedBy(X, MoviesList, Director), 
+    rejectMovies(MoviesList).
+
+getMoviesDirectedBy(-1, [], _).
+
+getMoviesDirectedBy(Current, [Current|ListOfMovies], Director) :- 
+    movieDirectedBy(Current, Director), 
+    NewCurrent is Current - 1,
+    getMoviesDirectedBy(NewCurrent, ListOfMovies, Director).
+
+getMoviesDirectedBy(Current, ListOfMovies, Director) :- 
+    NewCurrent is Current - 1,
+    getMoviesDirectedBy(NewCurrent, ListOfMovies, Director).
 
 
 /* util */
