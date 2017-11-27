@@ -6,5 +6,6 @@ askYesNoQuestion(Question) :-
 
 askQuestion(Question) :-
     jpl_call('javax.swing.JOptionPane','showInputDialog',[(@null),Question,'Question',3],X),
+   ((X == (@null)) -> write("\nInavlid input, once again...\n");
     write('your answer: '),
-    write(X).
+    write(X)).
