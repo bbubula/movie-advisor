@@ -5,12 +5,26 @@ debug_enabled(no).
 maxKeywordsToBeOffered(5).
 maxDirectorsToBeOffered(3).
 
+askYesNoQuestion(Question,X) :-
+    jpl_call('javax.swing.JOptionPane','showConfirmDialog',[(@null),Question,'Question',0],X).
+
+askQuestion(Question,X) :-
+    jpl_call('javax.swing.JOptionPane','showInputDialog',[(@null),Question,'Question',3],X),
+    ((X == (@null)) -> write('\nInavlid input, once again...\n'), askQuestion(Question, X);
+    write(X)).
+
+showMessage(Message) :-
+    jpl_call('javax.swing.JOptionPane','showMessageDialog',[(@null),Message,'Message',1],X).
+
+
 /* main choose structure */
-choose_movie(Description) :- 
+choose_movie(Description) :-
     createAcceptableMoviesSet(),
     filterPart(),
     propositionsPart(),
-    ((acceptableMovie(Result), movieHasHumanReadableDescription(Result, Description)); noResultFound(Description)).
+    ((acceptableMovie(Result), movieHasHumanReadableDescription(Result, Description)); noResultFound(Description)),
+    atom_concat('', Description, M),
+    showMessage(M).
 
 noResultFound("No results found. Try again with modified criteria. ;)").
 
@@ -60,16 +74,12 @@ filterPart() :-
     whichContinentsAreAcceptable().
 
 /* duration filtering */
-askForDurationRange(MinDuration, MaxDuration) :- 
-    write("Specify movie duration range"),
-    nl,
-    write("Specify min duration for the movie"),
-    nl,
-    read(MinDuration),
-    nl,
-    write("Specify max duration for the movie"),
-    nl,
-    read(MaxDuration).
+askForDurationRange(MinDuration, MaxDuration) :-
+    askQuestion('Specify min duration for the movie', Min),
+    askQuestion('Specify max duration for the movie', Max),
+    atom_number(Min, MinDuration),
+    atom_number(Max, MaxDuration).
+
 
 whatDurationIsAcceptable() :- 
     askForDurationRange(MinDuration, MaxDuration),
@@ -106,25 +116,22 @@ whichContinentsAreAcceptable() :-
     askIfAfricanMoviesAreAcceptable().
 
 askIfEuropeanMoviesAreAcceptable() :- 
-    askForContinent("Europe").
+    askForContinent('Europe').
 
 askIfAsianMoviesAreAcceptable() :- 
-    askForContinent("Asia").
+    askForContinent('Asia').
 
 askIfAfricanMoviesAreAcceptable() :- 
-    askForContinent("Africa").
+    askForContinent('Africa').
 
 askIfAmericanMoviesAreAcceptable() :- 
-    askForContinent("America").
+    askForContinent('America').
 
 askForContinent(Continent) :- 
-    write("Do you like movies from: "),
-    write(Continent),
-    write(" (y/n) ?"),
-    nl,
-    read(X),
-    ((X == y ; X == yes) -> moviesFromContinentPreferred(yes);
-    (X == n ; X == no) -> moviesFromContinentPreferred(no, Continent);
+    atom_concat('Do you like movies from ', Continent, Q),
+    askYesNoQuestion(Q, X),
+    ((X == 0) -> moviesFromContinentPreferred(yes);
+    ((X == 1) -> moviesFromContinentPreferred(no, Continent));
     (write("\nInavlid input, once again...\n")), askForContinent()).
 
 moviesFromContinentPreferred(yes).
@@ -153,15 +160,10 @@ getMoviesFromContinent(Current, ListOfMovies, Continent) :-
 
 /* years filtering */
 askForYearRange(MinYear, MaxYear) :- 
-    write("Specify years range for movie"),
-    nl,
-    write("Specify start year"),
-    nl,
-    read(MinYear),
-    nl,
-    write("Specify end year"),
-    nl,
-    read(MaxYear).
+     askQuestion('Specify start year for movie', Min),
+     askQuestion('Specify end year for movie', Max),
+     atom_number(Min, MinYear),
+     atom_number(Max, MaxYear).
 
 whichYearsAreAcceptable() :-
     askForYearRange(MinYear, MaxYear),
@@ -185,11 +187,9 @@ getMoviesWithIncorrectYear(Current, ListOfMovies, MinYear, MaxYear) :-
 
 /* ambitious filter */
 askIfAmbitiousMovieIsPreferred() :- 
-    write("Do you like ambitious movies ? (y/n)"),
-    nl,
-    read(X),
-    ((X == y ; X == yes) -> ambitiousMoviePreferred(yes);
-    (X == n ; X == no) -> ambitiousMoviePreferred(no);
+    askYesNoQuestion('Do you like ambitious movies ?', X),
+    ((X == 0) -> ambitiousMoviePreferred(yes);
+    ((X == 1) -> ambitiousMoviePreferred(no));
     (write("\nInavlid input, once again...\n")), askIfAmbitiousMovieIsPreferred()).
 
 ambitiousMoviePreferred(no) :-
@@ -208,11 +208,9 @@ ambitiousMoviePreferred(yes) :-
 
 /* action filter */
 askIfActionIsPreferred() :- 
-    write("Do you like action movies ? (y/n)"),
-    nl,
-    read(X),
-    ((X == y ; X == yes) -> actionPreferred(yes);
-    (X == n ; X == no) -> actionPreferred(no);
+     askYesNoQuestion('Do you like action movies ?', X),
+     ((X == 0) -> actionPreferred(yes);
+    ((X == 1) -> actionPreferred(no));
     (write("\nInavlid input, once again...\n")), askIfActionIsPreferred()).
 
 actionPreferred(no) :-
@@ -226,11 +224,9 @@ actionPreferred(yes) :-
 
 /* fiction filter */
 askIfFictionIsPreferred() :- 
-    write("Do you like fiction movies ? (y/n)"),
-    nl,
-    read(X),
-    ((X == y ; X == yes) -> fictionPreferred(yes);
-    (X == n ; X == no) -> fictionPreferred(no);
+    askYesNoQuestion('Do you like fiction movies ?', X),
+    ((X == 0) -> fictionPreferred(yes);
+    ((X == 1) -> fictionPreferred(no));
     (write("\nInavlid input, once again...\n")), askIfFictionIsPreferred()).
 
 fictionPreferred(no) :-
@@ -243,12 +239,10 @@ fictionPreferred(yes) :-
 
 /* emotional filter */
 
-askIfEmotionalMovieIsPreffered() :- 
-    write("Do you like emotional movies ? (y/n)"),
-    nl,
-    read(X),
-    ((X == y ; X == yes) -> emotionalMoviePreferred(yes);
-    (X == n ; X == no) -> emotionalMoviePreferred(no);
+askIfEmotionalMovieIsPreffered() :-
+    askYesNoQuestion('Do you like emotional movies ?', X),
+    ((X == 0) -> emotionalMoviePreferred(yes);
+    ((X == 1) -> emotionalMoviePreferred(no));
     (write("\nInavlid input, once again...\n")), askIfEmotionalMovieIsPreferred()).
 
 emotionalMoviePreferred(no) :-
@@ -279,7 +273,7 @@ getMoviesOfGenre(Current, ListOfMovies, Genre) :-
     getMoviesOfGenre(NewCurrent, ListOfMovies, Genre).
 
 /* -------------------------------------------------- propositionsPart --------------------------------------------------*/
-propositionsPart() :- 
+propositionsPart() :-
     offerByKeywords(),
     offerByDirectors().
 
@@ -316,14 +310,11 @@ askForKeywords([H|T], Current):-
 askForKeywords([_|T], Current):-
     askForKeywords(T, Current).
 
-askForKeyword(Keyword) :- 
-    write("Are you interested with '"),
-    write(Keyword),
-    write("' (y/n) ?"),
-    nl,
-    read(X),
-    (((X == n ; X == no) -> rejectMoviesWithKeyword(Keyword));
-    (X == y; X == yes);
+askForKeyword(Keyword) :-
+    atom_concat('Are you interested in ', Keyword, Q),
+    askYesNoQuestion(Q, X),
+    ((X == 0);
+    ((X == 1) -> rejectMoviesWithKeyword(Keyword));
     (write("\nInvalid input. Try again...\n"), askForKeyword(Keyword))).
 
 /* removal based on keyword */
@@ -348,7 +339,7 @@ getMoviesWithKeyword(Current, ListOfMovies, Keyword) :-
 offerByDirectors() :- 
     maxDirectorsToBeOffered(Count), 
     acceptableMovieSet(ListOfMovies),
-    askForDirectors(ListOfMovies, Count). 
+    askForDirectors(ListOfMovies, Count).
 
 askForDirectors([], _).
 askForDirectors(_, 0).
@@ -363,13 +354,10 @@ askForDirectors([_|T], Current):-
     askForDirectors(T, Current).
 
 askForDirector(Director) :- 
-    write("Do you like director '"),
-    write(Director),
-    write("' (y/n) ?"),
-    nl,
-    read(X),
-    (((X == n ; X == no) -> rejectMoviesWithDirector(Director));
-    (X == y; X == yes);
+     atom_concat('Do you like ', Director, Q),
+     askYesNoQuestion(Q, X),
+     ((X == 0);
+     ((X == 1) -> rejectMoviesWithDirector(Director));
     (write("\nInvalid input. Try again...\n"), askForDirector(Director))).
 
 /* removal based on director */
