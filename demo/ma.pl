@@ -1,4 +1,4 @@
-:- ensure_loaded(knowledge_base).
+:- ensure_loaded(knowledge_base_clean).
 :- ensure_loaded(geo_country).
 
 debug_enabled(no).
